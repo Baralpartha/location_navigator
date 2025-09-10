@@ -4,7 +4,7 @@ import 'package:location_navigator/location_navigator.dart';
 void main() {
   test('NearbyPlacesWidget can be created', () {
     // Basic sanity check
-    final widget = NearbyPlacesWidget();
+    const widget = NearbyPlacesWidget(); // <-- Add const here
     expect(widget, isA<NearbyPlacesWidget>());
   });
 }

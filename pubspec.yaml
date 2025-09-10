@@ -1,6 +1,6 @@
 name: location_navigator
 description: "A Flutter package to navigate and find nearby places using location."
-version: 1.0.2
+version: 1.0.4
 
 homepage: https://github.com/Baralpartha/location_navigator
 repository: https://github.com/Baralpartha/location_navigator

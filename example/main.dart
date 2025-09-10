@@ -24,9 +24,9 @@ class ExampleApp extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Nearby Places'),
+          title: const Text("Nearby Places"),
         ),
-        body: const NearbyPlacesWidget(), // radius removed
+        body: const NearbyPlacesWidget(radius: 2000),
       ),
     );
   }

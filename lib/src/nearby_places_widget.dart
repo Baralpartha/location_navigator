@@ -21,16 +21,16 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
   Position? _userPosition;
   List<Place> _places = [];
   bool _loading = false;
-  String _selectedAmenity = '';
-  String _searchQuery = '';
+  String _selectedAmenity = "";
+  String _searchQuery = "";
   final TextEditingController _searchController = TextEditingController();
 
   final _amenities = {
-    'Mosques': 'place_of_worship',
-    'Hospitals': 'hospital',
-    'Restaurants': 'restaurant',
-    'Hotels': 'tourism=hotel',
-    'Pharmacies': 'pharmacy',
+    "Mosques": "place_of_worship",
+    "Hospitals": "hospital",
+    "Restaurants": "restaurant",
+    "Hotels": "tourism=hotel",
+    "Pharmacies": "pharmacy",
   };
 
   @override
@@ -101,8 +101,8 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
   }
 
   String _formatDistance(double distance) {
-    if (distance < 1000) return '${distance.toStringAsFixed(0)} m';
-    return '${(distance / 1000).toStringAsFixed(1)} km';
+    if (distance < 1000) return "${distance.toStringAsFixed(0)} m";
+    return "${(distance / 1000).toStringAsFixed(1)} km";
   }
 
   @override
@@ -128,14 +128,13 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
             )
                 .toList(),
             onChanged: (val) {
-              if (val == null) return;
               setState(() {
-                _selectedAmenity = val;
-                _searchQuery = '';
+                _selectedAmenity = val ?? "";
+                _searchQuery = "";
                 _searchController.clear();
                 _places.clear();
               });
-              _fetchPlaces();
+              if (val != null && val.isNotEmpty) _fetchPlaces();
             },
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -155,26 +154,26 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
               suffixIcon: IconButton(
                 icon: const Icon(Icons.send),
                 onPressed: () {
-                  final query = _searchController.text.trim();
-                  if (query.isEmpty) return;
                   setState(() {
-                    _selectedAmenity = '';
-                    _searchQuery = query;
+                    _selectedAmenity = "";
+                    _searchQuery = _searchController.text.trim();
                     _places.clear();
                   });
-                  _fetchPlaces(searchQuery: query);
+                  if (_searchQuery.isNotEmpty) {
+                    _fetchPlaces(searchQuery: _searchQuery);
+                  }
                 },
               ),
             ),
             onSubmitted: (val) {
-              final query = val.trim();
-              if (query.isEmpty) return;
               setState(() {
-                _selectedAmenity = '';
-                _searchQuery = query;
+                _selectedAmenity = "";
+                _searchQuery = val.trim();
                 _places.clear();
               });
-              _fetchPlaces(searchQuery: query);
+              if (_searchQuery.isNotEmpty) {
+                _fetchPlaces(searchQuery: _searchQuery);
+              }
             },
           ),
         ),
@@ -195,12 +194,10 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
                   vertical: 4,
                 ),
                 child: ListTile(
-                  leading:
-                  const Icon(Icons.place, color: Colors.teal),
+                  leading: const Icon(Icons.place, color: Colors.teal),
                   title: Text(place.name),
                   subtitle: Text(
-                    '${place.type} • ${_formatDistance(place.distance ?? 0)}',
-                  ),
+                      '${place.type} • ${_formatDistance(place.distance ?? 0)}'),
                   onTap: () {
                     Navigator.push(
                       context,

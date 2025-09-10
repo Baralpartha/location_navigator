@@ -11,7 +11,7 @@ class Place {
   /// The longitude of the place.
   final double lon;
 
-  /// The type of the place (amenity), e.g., 'hospital', 'mosque'.
+  /// The type of the place (amenity), e.g., "hospital", "mosque".
   final String type;
 
   /// Distance from the user in meters. Calculated at runtime.
@@ -31,23 +31,19 @@ class Place {
   /// The [json] parameter is a single element from the Overpass API response.
   /// The [type] is the amenity type of the place.
   ///
-  /// Handles both 'node' type elements and elements with 'center' coordinates.
-  /// If the place name is not available in the JSON, it defaults to 'Unnamed $type'.
+  /// Handles both `"node"` type elements and elements with `"center"` coordinates.
+  /// If the place name is not available in the JSON, it defaults to `"Unnamed $type"`.
   factory Place.fromOverpass(Map<String, dynamic> json, String type) {
     double lat = 0, lon = 0;
-
-    if (json['type'] == 'node') {
-      lat = (json['lat'] as num).toDouble();
-      lon = (json['lon'] as num).toDouble();
-    } else if (json['center'] != null) {
-      final center = json['center'] as Map<String, dynamic>;
-      lat = (center['lat'] as num).toDouble();
-      lon = (center['lon'] as num).toDouble();
+    if (json["type"] == "node") {
+      lat = (json["lat"] as num).toDouble();
+      lon = (json["lon"] as num).toDouble();
+    } else if (json["center"] != null) {
+      lat = (json["center"]["lat"] as num).toDouble();
+      lon = (json["center"]["lon"] as num).toDouble();
     }
 
-    final tags = json['tags'] as Map<String, dynamic>?;
-    final name = tags?['name'] ?? 'Unnamed $type';
-
+    final name = json["tags"]?["name"] ?? "Unnamed $type";
     return Place(name: name, lat: lat, lon: lon, type: type);
   }
 }

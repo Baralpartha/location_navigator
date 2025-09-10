@@ -1,49 +1,59 @@
 # 📍 Location Navigator
 
-A Flutter package to **find and navigate nearby places** (e.g. Mosques, Hospitals, Hotels, Restaurants, Pharmacies) using **OpenStreetMap data** and **Geolocator**.
+A Flutter package to **find and navigate nearby places** (e.g. Mosques, Hospitals, Hotels, Restaurants, Pharmacies) using **OpenStreetMap (Overpass API)** and **Geolocator**.
+[![Pub Version](https://img.shields.io/pub/v/location_navigator.svg)](https://github.com/Baralpartha/location_navigator)
+[![License](https://img.shields.io/github/license/Baralpartha/location_navigator)](https://github.com/Baralpartha/location_navigator/blob/main/LICENSE)
 
 ---
 
 ## ✨ Features
-- 🔎 Get user's **current location** with permission handling.
+- 🔎 Get user's **current location** with permission handling
 - 🕌 Show nearby **Mosques, Hospitals, Restaurants, Hotels, Pharmacies** etc.
-- 📍 Dropdown to select place type (amenity).
-- 📝 Search box to filter nearby places by name.
-- 📏 Places sorted automatically by **distance**.
-- 🗺️ Built-in **Map view** with markers and navigation.
-- 🎨 Simple **Material Design with teal theme**.
+- 📍 Dropdown to select place type (amenity)
+- 📝 Search box to filter nearby places by name
+- 📏 Places automatically sorted by **distance**
+- 🗺️ Built-in **Map view** with markers and navigation
+- 🎨 Simple **Material Design with teal theme**
 
 ---
 
 ## ⚙️ How It Works
 
 1. **Get Current Location**  
-   The package uses [geolocator](https://pub.dev/packages/geolocator) to request location permission and fetch the user's latitude & longitude.
+   Uses [geolocator](https://pub.dev/packages/geolocator) to request permission and fetch the user's latitude & longitude.
 
 2. **Fetch Nearby Places**  
-   It calls [OpenStreetMap (Overpass API)](https://overpass-api.de/) through a service (`PlaceService`) to search for nearby places based on **amenity type** (e.g. hospital, mosque, hotel).
+   Calls [OpenStreetMap (Overpass API)](https://overpass-api.de/) via a `PlaceService` to search for nearby places based on **amenity type** (e.g., hospital, mosque, hotel).
 
 3. **Distance Calculation**  
-   Each place's distance from the user is calculated using `Geolocator.distanceBetween(...)`.
+   Each place's distance from the user is calculated using:
+   ```dart
+   Geolocator.distanceBetween(...)
 
-4. **Sorting & Filtering**
-    - If the user selects a category (Hospital, Mosque etc.), results are filtered by that.
-    - If the user types in the search box, results are filtered by name.
-    - Finally, places are sorted by **nearest distance**.
+    Sorting & Filtering
 
-5. **Display Results**
-    - A **ListView** shows the places with name, type, and distance.
-    - Tapping an item opens a **Map screen** (powered by [flutter_map](https://pub.dev/packages/flutter_map)) where the selected place and user location are displayed.
+        Select a category (Hospital, Mosque, Hotel etc.) via dropdown
 
----
+        Or search any nearby place by name
 
-## 📦 Installation
+        Results sorted by nearest distance
 
-Add the dependency in your `pubspec.yaml`:
+    Display Results
 
-```yaml
+        A ListView shows the places with name, type, and distance
+
+        On tap → opens a Map screen (powered by flutter_map
+
+        ) where the user’s location and selected place are displayed
+
+📦 Installation
+
+Add the dependency in your pubspec.yaml:
+
 dependencies:
-  location_navigator: ^1.0.0
+location_navigator: ^1.0.1
+
 Then run:
+
 flutter pub get
 

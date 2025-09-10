@@ -1,4 +1,4 @@
-## 1.0.0
+## 1.0.1
 
 - Initial release of `location_navigator`.
 - Added `NearbyPlacesWidget` to fetch and display nearby places.

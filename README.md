@@ -1,8 +1,9 @@
 # 📍 Location Navigator
 
-A Flutter package to **find and navigate nearby places** (e.g. Mosques, Hospitals, Hotels, Restaurants, Pharmacies) using **OpenStreetMap (Overpass API)** and **Geolocator**.
-[![Pub Version](https://img.shields.io/pub/v/location_navigator.svg)](https://github.com/Baralpartha/location_navigator)
+[![Pub Version](https://img.shields.io/pub/v/location_navigator.svg)](https://pub.dev/packages/location_navigator)  
 [![License](https://img.shields.io/github/license/Baralpartha/location_navigator)](https://github.com/Baralpartha/location_navigator/blob/main/LICENSE)
+
+A Flutter package to **find and navigate nearby places** (e.g. Mosques, Hospitals, Hotels, Restaurants, Pharmacies) using **OpenStreetMap (Overpass API)** and **Geolocator**.
 
 ---
 
@@ -27,33 +28,11 @@ A Flutter package to **find and navigate nearby places** (e.g. Mosques, Hospital
 
 3. **Distance Calculation**  
    Each place's distance from the user is calculated using:
+
    ```dart
-   Geolocator.distanceBetween(...)
-
-    Sorting & Filtering
-
-        Select a category (Hospital, Mosque, Hotel etc.) via dropdown
-
-        Or search any nearby place by name
-
-        Results sorted by nearest distance
-
-    Display Results
-
-        A ListView shows the places with name, type, and distance
-
-        On tap → opens a Map screen (powered by flutter_map
-
-        ) where the user’s location and selected place are displayed
-
-📦 Installation
-
-Add the dependency in your pubspec.yaml:
-
-dependencies:
-location_navigator: ^1.0.1
-
-Then run:
-
-flutter pub get
-
+   Geolocator.distanceBetween(
+       userLatitude,
+       userLongitude,
+       placeLatitude,
+       placeLongitude,
+   );

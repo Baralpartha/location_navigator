@@ -2,19 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location_navigator/src/place_service.dart';
 import 'package:location_navigator/src/screens/map_screen.dart';
-
 import '../location_navigator.dart';
 
 /// A reusable widget to fetch and display nearby places (e.g. Mosques, Hospitals, Hotels).
-///
-/// Features:
-/// - Get user's current location.
-/// - Dropdown to select place type (Amenity).
-/// - Search box to filter nearby places by name.
-/// - Display list of nearby places sorted by distance.
-/// - Navigate to [MapScreen] on item tap.
 class NearbyPlacesWidget extends StatefulWidget {
-  /// Search radius in meters (default = 2000m).
   final int radius;
 
   const NearbyPlacesWidget({super.key, this.radius = 2000});
@@ -29,11 +20,8 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
   bool _loading = false;
   String _selectedAmenity = "";
   String _searchQuery = "";
-
-  // ignore: unused_field
   Place? _selectedPlace;
 
-  /// Supported amenities
   final _amenities = {
     "Mosques": "place_of_worship",
     "Hospitals": "hospital",
@@ -50,7 +38,6 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
     _getUserLocation();
   }
 
-  /// Get user’s current location with permission handling
   Future<void> _getUserLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
@@ -69,7 +56,6 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
     });
   }
 
-  /// Fetch nearby places from API based on selected amenity or search query
   Future<void> _fetchPlaces({String? searchQuery}) async {
     if (_userPosition == null) return;
 
@@ -84,7 +70,6 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
         searchQuery: searchQuery,
       );
 
-      // Calculate distance for each place
       for (var place in results) {
         place.distance = Geolocator.distanceBetween(
           _userPosition!.latitude,
@@ -94,7 +79,6 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
         );
       }
 
-      // Filter by search query
       List<Place> filtered = results;
       if (searchQuery != null && searchQuery.isNotEmpty) {
         filtered = results
@@ -103,21 +87,17 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
             .toList();
       }
 
-      // Sort by nearest distance
       filtered.sort((a, b) => a.distance!.compareTo(b.distance!));
 
       setState(() {
         _places = filtered;
-        if (filtered.isNotEmpty) {
-          _selectedPlace = filtered[0];
-        }
+        if (filtered.isNotEmpty) _selectedPlace = filtered[0];
       });
     } finally {
       setState(() => _loading = false);
     }
   }
 
-  /// Format distance nicely (e.g. "250 m" or "1.2 km")
   String _formatDistance(double distance) {
     if (distance < 1000) return "${distance.toStringAsFixed(0)} m";
     return "${(distance / 1000).toStringAsFixed(2)} km";
@@ -131,17 +111,19 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
 
     return Column(
       children: [
-        /// Dropdown to select amenity type
+        // Dropdown
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: DropdownButtonFormField<String>(
             hint: const Text("Select Place Type"),
             value: _selectedAmenity.isEmpty ? null : _selectedAmenity,
             items: _amenities.entries
-                .map((e) => DropdownMenuItem(
-              value: e.value,
-              child: Text(e.key),
-            ))
+                .map(
+                  (e) => DropdownMenuItem(
+                value: e.value,
+                child: Text(e.key),
+              ),
+            )
                 .toList(),
             onChanged: (val) {
               setState(() {
@@ -150,9 +132,7 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
                 _searchController.clear();
                 _places.clear();
               });
-              if (val != null && val.isNotEmpty) {
-                _fetchPlaces();
-              }
+              if (val != null && val.isNotEmpty) _fetchPlaces();
             },
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -160,7 +140,7 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
           ),
         ),
 
-        /// Search box to find nearby places by name
+        // Search box
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
           child: TextField(
@@ -196,7 +176,7 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
           ),
         ),
 
-        /// Results list
+        // List of results
         Expanded(
           child: _loading
               ? const Center(child: CircularProgressIndicator())
@@ -214,8 +194,7 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
                   const Icon(Icons.place, color: Colors.teal),
                   title: Text(place.name),
                   subtitle: Text(
-                    "${place.type} • ${_formatDistance(place.distance ?? 0)}",
-                  ),
+                      "${place.type} • ${_formatDistance(place.distance ?? 0)}"),
                   onTap: () {
                     Navigator.push(
                       context,

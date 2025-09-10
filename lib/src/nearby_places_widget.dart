@@ -17,35 +17,21 @@ class NearbyPlacesWidget extends StatefulWidget {
   State<NearbyPlacesWidget> createState() => _NearbyPlacesWidgetState();
 }
 
-/// The internal state for [NearbyPlacesWidget], responsible for
-/// managing user location, fetching places, and rendering the UI.
 class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
-  /// The current user location.
   Position? _userPosition;
-
-  /// The list of nearby places fetched from the API.
   List<Place> _places = [];
-
-  /// Whether the widget is currently fetching data.
   bool _loading = false;
-
-  /// The currently selected amenity type from the dropdown.
-  String _selectedAmenity = "";
-
-  /// The current search query entered by the user.
-  String _searchQuery = "";
-
-  /// Predefined amenity types to fetch nearby places.
-  final _amenities = {
-    "Mosques": "place_of_worship",
-    "Hospitals": "hospital",
-    "Restaurants": "restaurant",
-    "Hotels": "tourism=hotel",
-    "Pharmacies": "pharmacy",
-  };
-
-  /// Controller for the search text field.
+  String _selectedAmenity = '';
+  String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
+
+  final _amenities = {
+    'Mosques': 'place_of_worship',
+    'Hospitals': 'hospital',
+    'Restaurants': 'restaurant',
+    'Hotels': 'tourism=hotel',
+    'Pharmacies': 'pharmacy',
+  };
 
   @override
   void initState() {
@@ -53,7 +39,6 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
     _getUserLocation();
   }
 
-  /// Fetches the current user location with proper permission handling.
   Future<void> _getUserLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
@@ -72,7 +57,6 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
     });
   }
 
-  /// Fetches nearby places based on the [searchQuery] and selected amenity.
   Future<void> _fetchPlaces({String? searchQuery}) async {
     if (_userPosition == null) return;
 
@@ -87,7 +71,6 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
         searchQuery: searchQuery,
       );
 
-      // Calculate distance from user for each place
       for (var place in results) {
         place.distance = Geolocator.distanceBetween(
           _userPosition!.latitude,
@@ -102,7 +85,8 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
       if (searchQuery != null && searchQuery.isNotEmpty) {
         filtered = results
             .where(
-                (p) => p.name.toLowerCase().contains(searchQuery.toLowerCase()))
+              (p) => p.name.toLowerCase().contains(searchQuery.toLowerCase()),
+        )
             .toList();
       }
 
@@ -116,10 +100,9 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
     }
   }
 
-  /// Formats the distance in meters or kilometers for display.
   String _formatDistance(double distance) {
-    if (distance < 1000) return "${distance.toStringAsFixed(0)} m";
-    return "${(distance / 1000).toStringAsFixed(2)} km";
+    if (distance < 1000) return '${distance.toStringAsFixed(0)} m';
+    return '${(distance / 1000).toStringAsFixed(1)} km';
   }
 
   @override
@@ -134,9 +117,8 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: DropdownButtonFormField<String>(
-
             value: _selectedAmenity.isEmpty ? null : _selectedAmenity,
-            hint: const Text("Select Place Type"),
+            hint: const Text('Select Place Type'),
             items: _amenities.entries
                 .map(
                   (e) => DropdownMenuItem(
@@ -146,13 +128,14 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
             )
                 .toList(),
             onChanged: (val) {
+              if (val == null) return;
               setState(() {
-                _selectedAmenity = val ?? "";
-                _searchQuery = "";
+                _selectedAmenity = val;
+                _searchQuery = '';
                 _searchController.clear();
                 _places.clear();
               });
-              if (val != null && val.isNotEmpty) _fetchPlaces();
+              _fetchPlaces();
             },
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -167,31 +150,31 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
             controller: _searchController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              labelText: "Search Nearby Place",
+              labelText: 'Search Nearby Place',
               prefixIcon: const Icon(Icons.search),
               suffixIcon: IconButton(
                 icon: const Icon(Icons.send),
                 onPressed: () {
+                  final query = _searchController.text.trim();
+                  if (query.isEmpty) return;
                   setState(() {
-                    _selectedAmenity = "";
-                    _searchQuery = _searchController.text.trim();
+                    _selectedAmenity = '';
+                    _searchQuery = query;
                     _places.clear();
                   });
-                  if (_searchQuery.isNotEmpty) {
-                    _fetchPlaces(searchQuery: _searchQuery);
-                  }
+                  _fetchPlaces(searchQuery: query);
                 },
               ),
             ),
             onSubmitted: (val) {
+              final query = val.trim();
+              if (query.isEmpty) return;
               setState(() {
-                _selectedAmenity = "";
-                _searchQuery = val.trim();
+                _selectedAmenity = '';
+                _searchQuery = query;
                 _places.clear();
               });
-              if (_searchQuery.isNotEmpty) {
-                _fetchPlaces(searchQuery: _searchQuery);
-              }
+              _fetchPlaces(searchQuery: query);
             },
           ),
         ),
@@ -201,37 +184,40 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
           child: _loading
               ? const Center(child: CircularProgressIndicator())
               : _places.isEmpty
-                  ? const Center(child: Text("No places found."))
-                  : ListView.builder(
-                      itemCount: _places.length,
-                      itemBuilder: (context, index) {
-                        final place = _places[index];
-                        return Card(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          child: ListTile(
-                            leading:
-                                const Icon(Icons.place, color: Colors.teal),
-                            title: Text(place.name),
-                            subtitle: Text(
-                                "${place.type} • ${_formatDistance(place.distance ?? 0)}"),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => MapScreen(
-                                    userLat: _userPosition!.latitude,
-                                    userLon: _userPosition!.longitude,
-                                    places: _places,
-                                    selectedPlace: place,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
+              ? const Center(child: Text('No places found.'))
+              : ListView.builder(
+            itemCount: _places.length,
+            itemBuilder: (context, index) {
+              final place = _places[index];
+              return Card(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
+                child: ListTile(
+                  leading:
+                  const Icon(Icons.place, color: Colors.teal),
+                  title: Text(place.name),
+                  subtitle: Text(
+                    '${place.type} • ${_formatDistance(place.distance ?? 0)}',
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MapScreen(
+                          userLat: _userPosition!.latitude,
+                          userLon: _userPosition!.longitude,
+                          places: _places,
+                          selectedPlace: place,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
         ),
       ],
     );

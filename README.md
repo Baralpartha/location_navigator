@@ -43,4 +43,4 @@ It leverages **OpenStreetMap (Overpass API)** and **Geolocator** to provide accu
 
 Add this to your pubspec.yaml:
 dependencies:
-location_navigator: ^0.0.1
+location_navigator: ^1.0.2

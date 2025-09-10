@@ -147,7 +147,7 @@ class _MapScreenState extends State<MapScreen> {
               // Places
               if (showAll)
                 ...widget.places.map(
-                      (p) => Marker(
+                  (p) => Marker(
                     width: 60,
                     height: 60,
                     point: LatLng(p.lat, p.lon),
@@ -160,8 +160,8 @@ class _MapScreenState extends State<MapScreen> {
                       },
                       child: Tooltip(
                         message: p.name,
-                        child:
-                        const Icon(Icons.place, color: Colors.green, size: 32),
+                        child: const Icon(Icons.place,
+                            color: Colors.green, size: 32),
                       ),
                     ),
                   ),
@@ -192,29 +192,29 @@ class _MapScreenState extends State<MapScreen> {
       // Bottom info card (only distance)
       bottomNavigationBar: (distance != null)
           ? Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black26,
-                offset: const Offset(0, -2),
-                blurRadius: 6)
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Distance: ${(distance! / 1000).toStringAsFixed(2)} km",
-              style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.teal),
-            ),
-          ],
-        ),
-      )
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black26,
+                      offset: const Offset(0, -2),
+                      blurRadius: 6)
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Distance: ${(distance! / 1000).toStringAsFixed(2)} km",
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal),
+                  ),
+                ],
+              ),
+            )
           : null,
     );
   }

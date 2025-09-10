@@ -4,23 +4,38 @@ import 'package:location_navigator/src/place_service.dart';
 import 'package:location_navigator/src/screens/map_screen.dart';
 import '../location_navigator.dart';
 
-/// A reusable widget to fetch and display nearby places (e.g. Mosques, Hospitals, Hotels).
+/// A widget that fetches and displays nearby places of interest,
+/// such as mosques, hospitals, hotels, restaurants, and pharmacies.
 class NearbyPlacesWidget extends StatefulWidget {
+  /// The search radius in meters for nearby places. Default is 2000 meters.
   final int radius;
 
+  /// Creates a [NearbyPlacesWidget] with an optional [radius].
   const NearbyPlacesWidget({super.key, this.radius = 2000});
 
   @override
   State<NearbyPlacesWidget> createState() => _NearbyPlacesWidgetState();
 }
 
+/// The internal state for [NearbyPlacesWidget], responsible for
+/// managing user location, fetching places, and rendering the UI.
 class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
+  /// The current user location.
   Position? _userPosition;
+
+  /// The list of nearby places fetched from the API.
   List<Place> _places = [];
+
+  /// Whether the widget is currently fetching data.
   bool _loading = false;
+
+  /// The currently selected amenity type from the dropdown.
   String _selectedAmenity = "";
+
+  /// The current search query entered by the user.
   String _searchQuery = "";
 
+  /// Predefined amenity types to fetch nearby places.
   final _amenities = {
     "Mosques": "place_of_worship",
     "Hospitals": "hospital",
@@ -29,6 +44,7 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
     "Pharmacies": "pharmacy",
   };
 
+  /// Controller for the search text field.
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -37,6 +53,7 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
     _getUserLocation();
   }
 
+  /// Fetches the current user location with proper permission handling.
   Future<void> _getUserLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
@@ -55,6 +72,7 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
     });
   }
 
+  /// Fetches nearby places based on the [searchQuery] and selected amenity.
   Future<void> _fetchPlaces({String? searchQuery}) async {
     if (_userPosition == null) return;
 
@@ -69,6 +87,7 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
         searchQuery: searchQuery,
       );
 
+      // Calculate distance from user for each place
       for (var place in results) {
         place.distance = Geolocator.distanceBetween(
           _userPosition!.latitude,
@@ -79,10 +98,11 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
       }
 
       List<Place> filtered = results;
+
       if (searchQuery != null && searchQuery.isNotEmpty) {
         filtered = results
-            .where((p) =>
-            p.name.toLowerCase().contains(searchQuery.toLowerCase()))
+            .where(
+                (p) => p.name.toLowerCase().contains(searchQuery.toLowerCase()))
             .toList();
       }
 
@@ -96,6 +116,7 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
     }
   }
 
+  /// Formats the distance in meters or kilometers for display.
   String _formatDistance(double distance) {
     if (distance < 1000) return "${distance.toStringAsFixed(0)} m";
     return "${(distance / 1000).toStringAsFixed(2)} km";
@@ -109,12 +130,13 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
 
     return Column(
       children: [
-        // Dropdown
+        // Dropdown to select place type
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: DropdownButtonFormField<String>(
-            hint: const Text("Select Place Type"),
+
             value: _selectedAmenity.isEmpty ? null : _selectedAmenity,
+            hint: const Text("Select Place Type"),
             items: _amenities.entries
                 .map(
                   (e) => DropdownMenuItem(
@@ -179,36 +201,37 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
           child: _loading
               ? const Center(child: CircularProgressIndicator())
               : _places.isEmpty
-              ? const Center(child: Text("No places found."))
-              : ListView.builder(
-            itemCount: _places.length,
-            itemBuilder: (context, index) {
-              final place = _places[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(
-                    horizontal: 8, vertical: 4),
-                child: ListTile(
-                  leading: const Icon(Icons.place, color: Colors.teal),
-                  title: Text(place.name),
-                  subtitle: Text(
-                      "${place.type} • ${_formatDistance(place.distance ?? 0)}"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => MapScreen(
-                          userLat: _userPosition!.latitude,
-                          userLon: _userPosition!.longitude,
-                          places: _places,
-                          selectedPlace: place, // Directly pass
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
+                  ? const Center(child: Text("No places found."))
+                  : ListView.builder(
+                      itemCount: _places.length,
+                      itemBuilder: (context, index) {
+                        final place = _places[index];
+                        return Card(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          child: ListTile(
+                            leading:
+                                const Icon(Icons.place, color: Colors.teal),
+                            title: Text(place.name),
+                            subtitle: Text(
+                                "${place.type} • ${_formatDistance(place.distance ?? 0)}"),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => MapScreen(
+                                    userLat: _userPosition!.latitude,
+                                    userLon: _userPosition!.longitude,
+                                    places: _places,
+                                    selectedPlace: place,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
         ),
       ],
     );

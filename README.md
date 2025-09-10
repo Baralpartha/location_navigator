@@ -3,36 +3,44 @@
 [![Pub Version](https://img.shields.io/pub/v/location_navigator.svg)](https://pub.dev/packages/location_navigator)  
 [![License](https://img.shields.io/github/license/Baralpartha/location_navigator)](https://github.com/Baralpartha/location_navigator/blob/main/LICENSE)
 
-A Flutter package to **find and navigate nearby places** (e.g. Mosques, Hospitals, Hotels, Restaurants, Pharmacies) using **OpenStreetMap (Overpass API)** and **Geolocator**.
+A Flutter package for discovering and navigating to **nearby places of interest** such as **mosques, hospitals, restaurants, hotels, and pharmacies**.  
+It leverages **OpenStreetMap (Overpass API)** and **Geolocator** to provide accurate, real-time location results.
 
 ---
 
 ## ✨ Features
-- 🔎 Get user's **current location** with permission handling
-- 🕌 Show nearby **Mosques, Hospitals, Restaurants, Hotels, Pharmacies** etc.
-- 📍 Dropdown to select place type (amenity)
-- 📝 Search box to filter nearby places by name
-- 📏 Places automatically sorted by **distance**
-- 🗺️ Built-in **Map view** with markers and navigation
-- 🎨 Simple **Material Design with teal theme**
+
+- 🔎 Retrieve the user’s **current location** with permission handling
+- 🕌 Display nearby **mosques, hospitals, restaurants, hotels, pharmacies**, and more
+- 📍 **Dropdown menu** for selecting amenity type
+- 📝 Built-in **search box** to filter places by name
+- 📏 Automatic sorting of places by **distance**
+- 🗺️ Integrated **map view** with markers and navigation support
+- 🎨 Clean **Material Design** with a teal theme
 
 ---
 
 ## ⚙️ How It Works
 
-1. **Get Current Location**  
-   Uses [geolocator](https://pub.dev/packages/geolocator) to request permission and fetch the user's latitude & longitude.
+1. **Current Location Access**  
+   Uses the [geolocator](https://pub.dev/packages/geolocator) package to handle permissions and fetch the user’s current latitude and longitude.
 
-2. **Fetch Nearby Places**  
-   Calls [OpenStreetMap (Overpass API)](https://overpass-api.de/) via a `PlaceService` to search for nearby places based on **amenity type** (e.g., hospital, mosque, hotel).
+2. **Nearby Places Query**  
+   Fetches data from [OpenStreetMap Overpass API](https://overpass-api.de/) through a `PlaceService`.  
+   Places are filtered by amenity type (e.g., `hospital`, `mosque`, `hotel`).
 
 3. **Distance Calculation**  
-   Each place's distance from the user is calculated using:
+   Each place is sorted based on proximity to the user using:
 
    ```dart
    Geolocator.distanceBetween(
-       userLatitude,
-       userLongitude,
-       placeLatitude,
-       placeLongitude,
+     userLatitude,
+     userLongitude,
+     placeLatitude,
+     placeLongitude,
    );
+🚀 Installation
+
+Add this to your pubspec.yaml:
+dependencies:
+location_navigator: ^0.0.1

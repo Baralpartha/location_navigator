@@ -20,7 +20,6 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
   bool _loading = false;
   String _selectedAmenity = "";
   String _searchQuery = "";
-  Place? _selectedPlace;
 
   final _amenities = {
     "Mosques": "place_of_worship",
@@ -91,7 +90,6 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
 
       setState(() {
         _places = filtered;
-        if (filtered.isNotEmpty) _selectedPlace = filtered[0];
       });
     } finally {
       setState(() => _loading = false);
@@ -190,8 +188,7 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
                 margin: const EdgeInsets.symmetric(
                     horizontal: 8, vertical: 4),
                 child: ListTile(
-                  leading:
-                  const Icon(Icons.place, color: Colors.teal),
+                  leading: const Icon(Icons.place, color: Colors.teal),
                   title: Text(place.name),
                   subtitle: Text(
                       "${place.type} • ${_formatDistance(place.distance ?? 0)}"),
@@ -203,7 +200,7 @@ class _NearbyPlacesWidgetState extends State<NearbyPlacesWidget> {
                           userLat: _userPosition!.latitude,
                           userLon: _userPosition!.longitude,
                           places: _places,
-                          selectedPlace: place,
+                          selectedPlace: place, // Directly pass
                         ),
                       ),
                     );

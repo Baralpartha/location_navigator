@@ -46,5 +46,4 @@ dependencies:
   location_navigator: ^1.0.0
 Then run:
 flutter pub get
-🚀 Usage
-Basic Example
+

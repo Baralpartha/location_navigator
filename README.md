@@ -49,7 +49,7 @@ Add the package to your **pubspec.yaml** dependencies:
 
 ```yaml
 dependencies:
-  location_navigator: ^1.0.5
+  location_navigator: ^1.0.6
 ```
 
 Then run:
